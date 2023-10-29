@@ -6,7 +6,7 @@
 #    By: svaccaro <svaccaro@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 17:30:08 by svaccaro          #+#    #+#              #
-#    Updated: 2023/10/25 14:43:39 by svaccaro         ###   ########.fr        #
+#    Updated: 2023/10/29 21:36:47 by svaccaro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ CLEAR = rm -f
 NAME = libftprintf.a
 
 # Source files to compile #
-SRC =
+SRC = ft_printft.c
 
 # Objects derived from source files #
 OBJS = $(SRC:.c=.o)
