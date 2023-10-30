@@ -6,7 +6,7 @@
 #    By: svaccaro <svaccaro@student.42malaga.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 17:30:08 by svaccaro          #+#    #+#              #
-#    Updated: 2023/10/29 21:36:47 by svaccaro         ###   ########.fr        #
+#    Updated: 2023/10/30 19:31:15 by svaccaro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ CLEAR = rm -f
 NAME = libftprintf.a
 
 # Source files to compile #
-SRC = ft_printft.c
+SRC = ft_printf.c ft_printf_utils.c
 
 # Objects derived from source files #
 OBJS = $(SRC:.c=.o)
@@ -52,3 +52,6 @@ re: flclean all
 # Patern rule to compile any .c file into its corresponding .o file #
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Tells to command make that these names aren't files #
+.PHONY: all clean fclean re bonus
