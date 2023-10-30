@@ -6,11 +6,11 @@
 /*   By: svaccaro <svaccaro@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:45:09 by svaccaro          #+#    #+#             */
-/*   Updated: 2023/10/29 22:49:26 by svaccaro         ###   ########.fr       */
+/*   Updated: 2023/10/30 19:32:31 by svaccaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_pritf.h"
+#include "ft_printf.h"
 
 int	ft_printf(char const *s, ...)
 {
@@ -21,15 +21,16 @@ int	ft_printf(char const *s, ...)
 	i = 0;
 	bytcnt = 0;
 	va_start(ptr, s);
-	while (ptr[i])
+	while (s[i])
 	{
-		if (ptr[i] == %)
+		if (s[i] == '%')
 		{
 			i++;
-			bytcnt += ft_format(ptr[i], va_arg(ptr, char));
+			bytcnt += ft_format(s[i], ptr);
 		}
 		else
-			bytcnt += ft_putchar(ptr[i]);
+			bytcnt += ft_putchar(s[i]);
+		i++;
 	}
-	return(bytcnt);
+	return (bytcnt);
 }
