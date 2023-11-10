@@ -6,17 +6,17 @@
 /*   By: svaccaro <svaccaro@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:45:09 by svaccaro          #+#    #+#             */
-/*   Updated: 2023/10/30 19:32:31 by svaccaro         ###   ########.fr       */
+/*   Updated: 2023/11/06 16:28:24 by svaccaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf(char const *s, ...)
+int	ft_printf(const char *s, ...)
 {
 	va_list	ptr;
-	size_t	bytcnt;
-	size_t	i;
+	int		bytcnt;
+	int		i;
 
 	i = 0;
 	bytcnt = 0;
@@ -32,5 +32,6 @@ int	ft_printf(char const *s, ...)
 			bytcnt += ft_putchar(s[i]);
 		i++;
 	}
+	va_end(ptr);
 	return (bytcnt);
 }
