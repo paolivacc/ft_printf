@@ -3,129 +3,100 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svaccaro <svaccaro@student.42malaga.com>   +#+  +:+       +#+        */
+/*   By: svaccaro <svaccaro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/29 21:53:10 by svaccaro          #+#    #+#             */
-/*   Updated: 2023/11/09 20:36:50 by svaccaro         ###   ########.fr       */
+/*   Updated: 2023/11/30 23:49:07 by svaccaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_putchar(char c)
+int	ft_putchar(int c)
 {
-	return (write(STDOUT_FILENO, &c, sizeof(c)));
+	return (write(STDOUT_FILENO, &c, 1));
 }
 
 int	ft_putstr(char *s)
 {
 	int	bytcnt;
+	int	err;
 
+	if (!s)
+	{
+		ft_putstr("(null)");
+		return (6);
+	}
 	bytcnt = 0;
 	while (*s)
 	{
-		if (ft_putchar(*s) == -1)
+		err = ft_putchar(*s);
+		if (err == -1)
 			return (-1);
-		else if (ft_putchar(*s) == 1)
+		else if (err == 1)
 			bytcnt++;
 		s++;
 	}
 	return (bytcnt);
 }
 
-static size_t	ft_intlen(int n)
-{
-	size_t	len;
-
-	len = 0;
-	if (n <= 0)
-	{
-		len++;
-		n = -n;
-	}
-	while (n)
-	{
-		n = (n / 10);
-		len++;
-	}
-	return (len);
-}
-
-char	*ft_itoa(int n)
-{
-	char	*str;
-	int		nlen;
-
-	nlen = ft_intlen(n);
-	if (n == INT_MIN)
-		return (ft_strdup("-2147483648"));
-	str = malloc((nlen + 1) * sizeof(char));
-	if (!str)
-		return (NULL);
-	if (n < 0)
-	{
-		str[0] = '-';
-		n = -n;
-	}
-	*(str + nlen) = '\0';
-	if (n == 0)
-		str[0] = '0';
-	while (n > 0)
-	{
-		str[--nlen] = n % 10 + '0';
-		n /= 10;
-	}
-	return (str);
-}
-
-/*char	*ft_xtoa(int n)
-{
-	char	*str;
-	int		nlen;
-
-	nlen = ft_intlen(n);
-	if (n == INT_MIN)
-		return (ft_strdup("-2147483648"));
-	str = malloc((nlen + 1) * sizeof(char));
-	if (!str)
-		return (NULL);
-	if (n < 0)
-	{
-		str[0] = '-';
-		n = -n;
-	}
-	*(str + nlen) = '\0';
-	if (n == 0)
-		str[0] = '0';
-	while (n > 0)
-	{
-		str[--nlen] = n % 10 + '0';
-		n /= 10;
-	}
-	return (str);
-}
-*/
-
-int	ft_format(char c, va_list param)
+int	ft_putunbr(unsigned int n)
 {
 	int	bytcnt;
 
 	bytcnt = 0;
-	if (c == 'c')
-		bytcnt += ft_putchar(va_arg(param, int));
-	else if (c == 's')
-		bytcnt += ft_putstr(va_arg(param, char *));
-	//else if (c == 'p')
-	//	bytcnt += ft_putstr((unsigned long)va_arg(param, void *));
-	else if (c == 'd' || c == 'i')
-		bytcnt += ft_putstr(ft_itoa(va_arg(param, int)));
-	else if (c == 'u')
-		bytcnt += ft_putstr(ft_itoa(va_arg(param, unsigned int)i));
-	//else if (c == 'x')
-	//	bytcnt += ft_putstr(ft_itoa(va_arg(param, unsigned int));
-	//else if (c == 'X')
-	//	bytcnt += ft_putstr(ft_itoa(va_arg(param, unsigned int));
-	else if (c == '%')
-		bytcnt += ft_putchar('%');
-	return (bytcnt);
+	if (n >= 10)
+		bytcnt += ft_putunbr(n / 10);
+	return (bytcnt + ft_putchar((n % 10) + '0'));
+}
+
+int	ft_putnbr(int n)
+{
+	char	c;
+	int		bytcnt;
+
+	bytcnt = 0;
+	if (n == INT_MIN)
+	{
+		ft_putstr("-2147483648");
+		return (11);
+	}
+	else if (n < 0)
+	{
+		ft_putchar('-');
+		bytcnt++;
+		n = -n;
+	}
+	if (n >= 10)
+		bytcnt += ft_putnbr(n / 10);
+	c = (n % 10) + '0';
+	ft_putchar(c);
+	return (bytcnt + 1);
+}
+
+int	ft_putxnbr(unsigned long long n, char c)
+{
+	char		*base;
+	int			bytcnt;
+	static int	flag = 0;
+
+	bytcnt = 0;
+	if (c == 'p' && n == 0)
+		return (bytcnt += ft_putstr("0x0"));
+	else if (c == 'p' && n == ULONG_MAX)
+		return (bytcnt += ft_putstr("0xffffffffffffffff"));
+	if (c == 'x' || c == 'p')
+		base = "0123456789abcdef";
+	else
+		base = "0123456789ABCDEF";
+	if (c == 'p' && flag == 0)
+	{
+		flag = 1;
+		bytcnt += ft_putstr("0x");
+	}
+	if (n >= 16)
+		bytcnt += ft_putxnbr(n / 16, c);
+	ft_putchar(base[n % 16]);
+	flag = 0;
+	return (bytcnt + 1);
 }
